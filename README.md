@@ -29,6 +29,17 @@ In addition, [Laracasts](https://laracasts.com) contains thousands of video tuto
 
 You can also watch bite-sized lessons with real-world projects on [Laravel Learn](https://laravel.com/learn), where you will be guided through building a Laravel application from scratch while learning PHP fundamentals.
 
+## Local Development
+
+This app runs on Postgres (see `.env.example`), including for the automated test suite (`phpunit.xml`) — kept identical to production on purpose, see [docs/adr/0001-test-database-matches-production-engine.md](docs/adr/0001-test-database-matches-production-engine.md).
+
+1. Install [Docker Desktop](https://www.docker.com/products/docker-desktop/).
+2. Start Postgres: `docker compose up -d`. This creates two databases on first run — `laravel` (dev) and `claude_demo_test` (test suite, kept separate from dev data).
+3. `composer install`
+4. `cp .env.example .env && php artisan key:generate`
+5. `php artisan migrate`
+6. `php artisan test` — runs against `claude_demo_test`, no further setup needed.
+
 ## Agentic Development
 
 Laravel's predictable structure and conventions make it ideal for AI coding agents like Claude Code, Cursor, and GitHub Copilot. Install [Laravel Boost](https://laravel.com/docs/ai) to supercharge your AI workflow:

@@ -1,0 +1,21 @@
+services:
+  db:
+    image: postgres:17-alpine
+    restart: unless-stopped
+    ports:
+      - '${DB_PORT:-5433}:5432'
+    environment:
+      POSTGRES_DB: '${DB_DATABASE:-laravel}'
+      POSTGRES_USER: '${DB_USERNAME:-postgres}'
+      POSTGRES_HOST_AUTH_METHOD: trust
+    volumes:
+      - claude-demo-postgres:/var/lib/postgresql/data
+      - ./docker/postgres/init.sql:/docker-entrypoint-initdb.d/init.sql
+    healthcheck:
+      test: ['CMD-SHELL', 'pg_isready -U ${DB_USERNAME:-postgres}']
+      interval: 5s
+      timeout: 5s
+      retries: 5
+
+volumes:
+  claude-demo-postgres:

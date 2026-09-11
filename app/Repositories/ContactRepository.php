@@ -56,19 +56,19 @@ final class ContactRepository implements ContactRepositoryContract
      */
     public function search(User $user, string $query): Collection
     {
-        $needle = '%'.mb_strtolower($query).'%';
+        $needle = '%'.$query.'%';
 
         return Contact::query()
             ->where('user_id', $user->id)
             ->where(function ($builder) use ($needle) {
                 $builder
-                    ->whereRaw('LOWER(first_name) LIKE ?', [$needle])
-                    ->orWhereRaw('LOWER(last_name) LIKE ?', [$needle])
+                    ->where('first_name', 'ILIKE', $needle)
+                    ->orWhere('last_name', 'ILIKE', $needle)
                     ->orWhereHas('emails', function ($emails) use ($needle) {
-                        $emails->whereRaw('LOWER(email) LIKE ?', [$needle]);
+                        $emails->where('email', 'ILIKE', $needle);
                     })
                     ->orWhereHas('phones', function ($phones) use ($needle) {
-                        $phones->whereRaw('LOWER(phone_number) LIKE ?', [$needle]);
+                        $phones->where('phone_number', 'ILIKE', $needle);
                     });
             })
             ->get();
